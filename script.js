@@ -5,12 +5,14 @@ const deleteAllBtn = document.querySelector('footer button');
 
 inputBox.onkeyup = () => {
     let userEnteredValue = inputBox.value;
-    if(userEnteredValue.trim() != 0) {
+    if(userEnteredValue.trim() !== 0) {
         addBtn.classList.add("active");
     }else {
         addBtn.classList.remove('active');
     }
 }
+
+showTasks();
 
 addBtn.onclick = () => {
     let userEnteredValue = inputBox.value;
@@ -19,11 +21,12 @@ addBtn.onclick = () => {
     if(getLocalStorageData == null) {
         list = [];
     }else {
-        list = JSON.parse(getLocaStorageData);
+        list = JSON.parse(getLocalStorageData);
     }
     list.push(userEnteredValue);
     localStorage.setItem('todo_app',JSON.stringify(list));
     showTasks();
+    addBtn.classList.remove("active")
 }
 
 function showTasks() {
@@ -45,6 +48,23 @@ function showTasks() {
 
     let newListItems = "";
     list.forEach((element,index) => {
-        
+        newListItems += `<li>${element} <span class="deleteTask" onclick="deleteTask(${index})">delete</span></li>` 
     })
+
+    todoList.innerHTML = newListItems;
+    inputBox.value = "";
+}
+
+function deleteTask(index) {
+    let getLocalStorageData = localStorage.getItem("todo_app");
+
+    list = JSON.parse(getLocalStorageData);
+    list.splice(index,1);
+    localStorage.setItem("todo_app",JSON.stringify(list));
+    showTasks(); 
+}
+
+deleteAllBtn.onclick = () => {
+    localStorage.setItem("todo_app",JSON.stringify([]));
+    showTasks();
 }
